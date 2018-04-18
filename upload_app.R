@@ -29,7 +29,13 @@ ui <- fluidPage(
     ),
     # Main Panel for Instructions, Review, and Upload
     mainPanel(
-       tableOutput("display")
+       h2("Upload Instructions"),
+       ("Instruction Text"),
+       hr(),
+       textOutput("upload_status"),
+       tableOutput("display"),
+        actionButton("uploadData", "Click to Upload Data"),
+       textOutput("rows_to_upload")
     )
   )
 )
@@ -49,12 +55,17 @@ server <- function(input, output) {
     if (is.null(inFile))
       return(NULL)
     data_set <- read.delim(file = inFile$datapath, header = input$header, nrows=2)
+    if (input$header == 'FALSE')
+      names(data_set) <- c("customer_id","first_name","last_name","street_address"
+                          ,"state_code","zip_five","status","product_id","product_name"
+                          ,"purchase_amount","purchase_datetime" 
+                         )
     data_set
     })
   # Function Used to Upload Data
     uploadData_Custom <- function(dataToUpload){
       passwordFile <- '/Secure/Path/to/file/faux_creds.R' #FilePath to Password File
-      source(passwordFile) #See faux_creds.R - Keeping out of Global Environment
+      source(passwordFile) #See faux_creds.R - Keeping out of Global Environment    
       mydb <- livedb_connection() # Imported function from db_connection
       #Append to web_uploads table in MySQL Server
       dbWriteTable(mydb, name='web_uploads', value=dataToUpload, append=TRUE, row.names=FALSE)
@@ -63,7 +74,24 @@ server <- function(input, output) {
       dbDisconnect(mydb)
     }
   # Insert data into database
-}
+      output$rows_to_upload <- renderText({
+      inFile <- input$file1
+      if (is.null(inFile)) return()
+      if(input$uploadData==0)
+        return("Upload Not Started.")
+      data_set <- read.csv(inFile$datapath, header = input$header)
+      row_count <- nrow(data_set)
+      upload_response <- 'EMPTY' #Setting for generic tests
+      # upload_response <- uploadData_Custom(data_set)
+      rm(data_set)
+      if(upload_response=='TRUE')  
+        return(paste("Uploaded rows: ",as.character(row_count),sep=""))
+      if(upload_response=='EMPTY')
+        return("uploadData_Custom Function Commented Out") #For the purpose of publishing publicly
+      return(paste("Warning: Upload Failed: ",upload_response,sep=""))
+    })
+  }
+
 
 # Run the application 
 shinyApp(ui = ui, server = server)
