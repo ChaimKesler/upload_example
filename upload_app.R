@@ -27,6 +27,7 @@ ui <- fluidPage(
     ),
     # Main Panel for Instructions, Review, and Upload
     mainPanel(
+       tableOutput("display")
     )
   )
 )
@@ -41,6 +42,13 @@ server <- function(input, output) {
       "Please review your data before uploading"
     })
   # Upload first five rows of data for preview
+    output$display <- renderTable({
+    inFile <- input$file1
+    if (is.null(inFile))
+      return(NULL)
+    data_set <- read.delim(file = inFile$datapath, header = input$header, nrows=2)
+    data_set
+    })
   # Function Used to Upload Data
   # Insert data into database
 }
