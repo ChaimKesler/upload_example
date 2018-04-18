@@ -23,7 +23,8 @@ ui <- fluidPage(
                  ".txt")
       ),
       tags$hr(),
-      checkboxInput("header", "Header: Check if first row is header (default)", TRUE)
+      checkboxInput("header", "Header: Check if first row is header (default: unchecked)", FALSE)
+
     ),
     # Main Panel for Instructions, Review, and Upload
     mainPanel(
