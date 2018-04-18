@@ -116,7 +116,7 @@ server <- function(input, output) {
       data_set <-  read.delim(file = inFile$datapath, header = input$header, nrows=45000)
       column_check <- ncol(data_set)
       if (column_check != 11)
-        return(paste("Issue with file: ",column_check," detected and only 11 accepted!",sep=""))
+        return(paste("Issue with file: ",as.character(column_check)," detected and only 11 accepted!",sep=""))
       if (input$header == 'FALSE'){
         names(data_set) <- c("customer_id","first_name","last_name","street_address"
                             ,"state_code","zip_five","status","product_id","product_name"
