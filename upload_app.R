@@ -30,12 +30,23 @@ ui <- fluidPage(
     ),
     # Main Panel for Instructions, Review, and Upload
     mainPanel(
-       h2("Upload Instructions"),
-       ("Instruction Text"),
+       h2("Welcome to the Data Upload Tool"),
+       ("In order to successfully upload data into the database, it must align with the following"),
+       tags$ul(
+       tags$li("Column headers match exactly to the following, in order: customer_id, first_name
+               , last_name, street_address, state_code, zip_five, status, product_id
+               , product_name, purchase_amount, and purchase_datetime."), 
+       tags$li("Files should be tab delimited and records should be separated by newline characters."), 
+       tags$li("Files larger than 45,000 rows will be truncated, only the first 45,000 rows will be imported")
+       #Setting cap at 45,000 until chunking can added - using 45K base on past issues with Salesforce
+       ),
+       hr(),
+       h3("Example of File Format"),
+       tableOutput("sampleFile"),
        hr(),
        textOutput("upload_status"),
        tableOutput("display"),
-        actionButton("uploadData", "Click to Upload Data"),
+       actionButton("uploadData", "Click to Upload Data"),
        textOutput("rows_to_upload")
     )
   )
@@ -50,12 +61,27 @@ server <- function(input, output) {
         return("Please select data for upload")
       "Please review your data before uploading"
     })
+  
+  # Upload first five rows of data for preview
+    #Quick example
+    output$sampleFile <- renderTable({
+    #Assume sample file in diretory
+    local <- getwd()
+    sample_set <- read.delim(file = paste(local,"/upload_file.txt",sep=""), header = INPUT$HEADER, nrows=(5))
+    names(data_set) <- c("customer_id","first_name","last_name","street_address"
+                         ,"state_code","zip_five","status","product_id","product_name"
+                         ,"purchase_amount","purchase_datetime" 
+                         )
+    sample_set
+    #Want to be able to review if incorrect - allowing preview
+    })
+
   # Upload first five rows of data for preview
     output$display <- renderTable({
     inFile <- input$file1
     if (is.null(inFile))
       return(NULL)
-    data_set <- read.delim(file = inFile$datapath, header = input$header, nrows=2)
+    data_set <- read.delim(file = inFile$datapath, header = input$header, nrows=5)
           column_check <- ncol(data_set)
       if (input$header == 'FALSE')
         column_check <- ncol(data_set)
@@ -99,7 +125,10 @@ server <- function(input, output) {
       # upload_response <- uploadData_Custom(data_set)
       rm(data_set)
       if(upload_response=='TRUE')  
-        return(paste("Uploaded rows: ",as.character(row_count),sep=""))
+        if(row_count<=45000) 
+          return(paste("Uploaded rows: ",as.character(row_count),sep=""))
+        if(row_count>45000)
+          return(paste("Warning, only the first 45,000 out of: ",as.character(row_count)," rows uploaded.",sep=""))
       if(upload_response=='EMPTY')
         return("uploadData_Custom Function Commented Out") #For the purpose of publishing publicly
       return(paste("Warning: Upload Failed: ",upload_response,sep=""))
