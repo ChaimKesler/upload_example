@@ -40,7 +40,7 @@ ui <- fluidPage(
                , product_name, purchase_amount, and purchase_datetime."), 
        tags$li("Files should be tab delimited and records should be separated by newline characters."), 
        tags$li("Files larger than 45,000 rows will be truncated, only the first 45,000 rows will be imported")
-       #Setting cap at 45,000 until chunking can added - using 45K base on past issues with Salesforce
+       #Setting cap at 45,000 until chunking can be added - using 45K base on past issues with Salesforce
        ),
        hr(),
        h3("Example of File Format"),
@@ -112,7 +112,7 @@ server <- function(input, output) {
       if (is.null(inFile)) return()
       if(input$uploadData==0)
         return("Upload Not Started.")
-      data_set <-  read.delim(file = inFile$datapath, header = input$header)
+      data_set <-  read.delim(file = inFile$datapath, header = input$header, nrows=45000)
       column_check <- ncol(data_set)
       if (column_check != 11)
         return(paste("Issue with file: ",column_check," detected and only 11 accepted!",sep=""))
