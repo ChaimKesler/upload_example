@@ -4,6 +4,7 @@
 
 #Import Dependencies
 library(shiny)
+library(RMySQL)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -51,6 +52,16 @@ server <- function(input, output) {
     data_set
     })
   # Function Used to Upload Data
+    uploadData_Custom <- function(dataToUpload){
+      passwordFile <- '/Secure/Path/to/file/faux_creds.R' #FilePath to Password File
+      source(passwordFile) #See faux_creds.R - Keeping out of Global Environment
+      mydb <- livedb_connection() # Imported function from db_connection
+      #Append to web_uploads table in MySQL Server
+      dbWriteTable(mydb, name='web_uploads', value=dataToUpload, append=TRUE, row.names=FALSE)
+      # For security and projection against SQL Injections, dbWriteTable uses: 
+      # dbQuoteIdentifier(), for more info: https://cran.r-project.org/web/packages/DBI/DBI.pdf
+      dbDisconnect(mydb)
+    }
   # Insert data into database
 }
 
