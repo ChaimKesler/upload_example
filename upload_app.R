@@ -5,6 +5,7 @@
 #Import Dependencies
 library(shiny)
 library(RMySQL)
+library(anytime)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -79,7 +80,13 @@ server <- function(input, output) {
       if (is.null(inFile)) return()
       if(input$uploadData==0)
         return("Upload Not Started.")
-      data_set <- read.csv(inFile$datapath, header = input$header)
+      data_set <-  read.delim(file = inFile$datapath, header = input$header)
+      if (input$header == 'FALSE')
+      names(data_set) <- c("customer_id","first_name","last_name","street_address"
+                          ,"state_code","zip_five","status","product_id","product_name"
+                          ,"purchase_amount","purchase_datetime" 
+                          )
+      data_set$purchase_datetime <- iso8601(anytime(data_set$purchase_datetime))
       row_count <- nrow(data_set)
       upload_response <- 'EMPTY' #Setting for generic tests
       # upload_response <- uploadData_Custom(data_set)
