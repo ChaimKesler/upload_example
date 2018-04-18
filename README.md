@@ -1,5 +1,6 @@
 # Shiny App Upload Tool Example
 ShinyApp to upload data to an existing MySQL database
+![alt text](https://github.com/ChaimKesler/upload_example/blob/master/SampleImage.png)
 
 This application is an example of a shiny uploader tool, where data is uploaded from a tab delimited file and appended to a table in a MySQL database.
 
