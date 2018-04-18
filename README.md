@@ -40,3 +40,14 @@ The following is a list of future development items:
 * Expand error handling to catch issues with data and SQL Upload and data validation (will be rejected presently by RMySQL functions if type mismatch is detected)
 * Type checking on the rows (columns headers and sql errors handled by dbWriteTable)
 * Update to include better User Experience (e.g. auto-refresh of page / reset) after upload
+
+## Running Script
+The following are the recommended steps for running the application, using RStudio:
+* Create a new packrat project with git tracking in a new directory
+* Place the scripts in the associated directly
+* Install dependencies / libraries listed above
+* Validate any hard coded file paths (e.g. sample table and credentials)
+* Check connection to MySQL Database by loading creds
+* Run Shiny App and Validate
+* Publish to a Shiny Server
+* For more info, please see: https://shiny.rstudio.com/tutorial/written-tutorial/lesson7/
