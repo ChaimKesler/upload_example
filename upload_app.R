@@ -7,6 +7,15 @@ library(shiny)
 library(RMySQL)
 library(anytime)
 
+# Items Add to the project
+# - 'Upload ID' and/or timestamp for Reference (both returned in UI after upload and Inserted in Database)
+# - Log files for output, for tracking and trouble shooting
+# - Authentication: publishing requires local Shiny server for authentication (or SSO via cloud service)
+# - Expand error handling to catch issues with data and SQL Upload
+# - Type checking on the rows (columns headers and sql errors handled by dbWriteTable)
+# - Update to include better User Experience (e.g. auto-refresh of page / reset) after upload
+
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
   
@@ -67,8 +76,8 @@ server <- function(input, output) {
     output$sampleFile <- renderTable({
     #Assume sample file in diretory
     local <- getwd()
-    sample_set <- read.delim(file = paste(local,"/upload_file.txt",sep=""), header = INPUT$HEADER, nrows=(5))
-    names(data_set) <- c("customer_id","first_name","last_name","street_address"
+    sample_set <- read.delim(file = paste(local,"/upload_file.txt",sep=""), header = FALSE, nrows=(2))
+    names(sample_set) <- c("customer_id","first_name","last_name","street_address"
                          ,"state_code","zip_five","status","product_id","product_name"
                          ,"purchase_amount","purchase_datetime" 
                          )
