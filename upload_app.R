@@ -7,14 +7,7 @@ library(shiny)
 library(RMySQL)
 library(anytime)
 
-# Items Add to the project
-# - 'Upload ID' and/or timestamp for Reference (both returned in UI after upload and Inserted in Database)
-# - Log files for output, for tracking and trouble shooting
-# - Authentication: publishing requires local Shiny server for authentication (or SSO via cloud service)
-# - Expand error handling to catch issues with data and SQL Upload
-# - Type checking on the rows (columns headers and sql errors handled by dbWriteTable)
-# - Update to include better User Experience (e.g. auto-refresh of page / reset) after upload
-
+# Please see README.md for notes on future development
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
