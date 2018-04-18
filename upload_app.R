@@ -56,12 +56,16 @@ server <- function(input, output) {
     if (is.null(inFile))
       return(NULL)
     data_set <- read.delim(file = inFile$datapath, header = input$header, nrows=2)
-    if (input$header == 'FALSE')
-      names(data_set) <- c("customer_id","first_name","last_name","street_address"
-                          ,"state_code","zip_five","status","product_id","product_name"
-                          ,"purchase_amount","purchase_datetime" 
-                         )
+          column_check <- ncol(data_set)
+      if (input$header == 'FALSE')
+        column_check <- ncol(data_set)
+        if (column_check == 11)
+        names(data_set) <- c("customer_id","first_name","last_name","street_address"
+                            ,"state_code","zip_five","status","product_id","product_name"
+                            ,"purchase_amount","purchase_datetime" 
+                            )
     data_set
+    #Want to be able to review if incorrect - allowing preview
     })
   # Function Used to Upload Data
     uploadData_Custom <- function(dataToUpload){
@@ -81,6 +85,9 @@ server <- function(input, output) {
       if(input$uploadData==0)
         return("Upload Not Started.")
       data_set <-  read.delim(file = inFile$datapath, header = input$header)
+      column_check <- ncol(data_set)
+      if (column_check != 11)
+        return(paste("Issue with file: ",column_check," detected and only 11 accepted!",sep=""))
       if (input$header == 'FALSE')
       names(data_set) <- c("customer_id","first_name","last_name","street_address"
                           ,"state_code","zip_five","status","product_id","product_name"
