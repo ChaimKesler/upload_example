@@ -85,13 +85,14 @@ server <- function(input, output) {
       return(NULL)
     data_set <- read.delim(file = inFile$datapath, header = input$header, nrows=5)
           column_check <- ncol(data_set)
-      if (input$header == 'FALSE')
+      if (input$header == 'FALSE'){
         column_check <- ncol(data_set)
         if (column_check == 11)
         names(data_set) <- c("customer_id","first_name","last_name","street_address"
                             ,"state_code","zip_five","status","product_id","product_name"
                             ,"purchase_amount","purchase_datetime" 
                             )
+      }
     data_set
     #Want to be able to review if incorrect - allowing preview
     })
@@ -116,11 +117,11 @@ server <- function(input, output) {
       column_check <- ncol(data_set)
       if (column_check != 11)
         return(paste("Issue with file: ",column_check," detected and only 11 accepted!",sep=""))
-      if (input$header == 'FALSE')
-      names(data_set) <- c("customer_id","first_name","last_name","street_address"
-                          ,"state_code","zip_five","status","product_id","product_name"
-                          ,"purchase_amount","purchase_datetime" 
-                          )
+      if (input$header == 'FALSE'){
+        names(data_set) <- c("customer_id","first_name","last_name","street_address"
+                            ,"state_code","zip_five","status","product_id","product_name"
+                            ,"purchase_amount","purchase_datetime" 
+                            )}
       data_set$purchase_datetime <- iso8601(anytime(data_set$purchase_datetime))
       row_count <- nrow(data_set)
       upload_response <- 'EMPTY' #Setting for generic tests
